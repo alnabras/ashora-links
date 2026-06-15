@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "alnabras.net.ashora",
+      "sha256_cert_fingerprints": [
+        "78:18:43:22:E2:B6:26:4F:13:54:3A:BE:60:D6:47:A5:83:4E:2A:5E:EB:EC:9F:4C:F1:31:19:D2:17:22:25:E7"
+      ]
+    }
+  }
+]
