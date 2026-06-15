@@ -46,37 +46,39 @@
         }
     </style>
     <script>
-        // تشغيل فوري ومباشر دون انتظار تحميل عناصر الصفحة بالكامل لتقليل التأخير
         (function() {
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
-            const fallbackUrl = "https://play.google.com/store/apps/details?id=alnabras.net.ashora";
+            
+            // استخدام بروتوكول market:// لإجبار النظام على فتح تطبيق قوقل بلاي مباشرة
+            const marketUrl = "market://details?id=alnabras.net.ashora";
+            const webUrl = "https://play.google.com/store/apps/details?id=alnabras.net.ashora";
 
             if (id) {
                 const appUri = "ashora://join?id=" + id;
                 
-                // 1. إطلاق أمر فتح التطبيق فوراً وبدون أي تأخير زمني
+                // 1. محاولة فتح تطبيقك مباشرة
                 window.location.href = appUri;
 
-                // 2. إعداد فحص ذكي وسريع لحالة التثبيت
+                // 2. فحص سريع: إذا لم يفتح التطبيق، نفتح متجر قوقل بلاي مباشرة
                 const startTime = Date.now();
                 const timeout = setTimeout(function() {
-                    // تقليص الفارق الزمني للفحص للتأكد بسرعة إن كان التطبيق غير مثبت
                     if (Date.now() - startTime < 1500) {
                         const statusText = document.getElementById("status-text");
                         const loader = document.getElementById("loader");
                         const downloadBtn = document.getElementById("download-btn");
 
-                        if (statusText) statusText.innerText = "جاري تحويلك للمتجر للتحميل...";
+                        if (statusText) statusText.innerText = "جاري فتح متجر Google Play...";
                         if (loader) loader.style.display = "none";
                         if (downloadBtn) {
-                            downloadBtn.href = fallbackUrl;
+                            downloadBtn.href = webUrl; // رابط الويب كاحتياط يدوي للزر
                             downloadBtn.style.display = "inline-block";
                         }
-                        // تحويل تلقائي سريع للمتجر
-                        window.location.href = fallbackUrl;
+                        
+                        // التوجيه الإجباري لتطبيق المتجر
+                        window.location.href = marketUrl;
                     }
-                }, 1200); // تقليل وقت الانتظار إلى 1.2 ثانية فقط بدلاً من ثانيتين لسرعة استجابة أعلى
+                }, 1200);
 
                 window.onblur = function() {
                     clearTimeout(timeout);
@@ -84,7 +86,6 @@
             }
         })();
 
-        // إدارة واجهة العرض في حال عدم وجود معرف أو حدوث خطأ بالرابط
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             if (!urlParams.get('id')) {
