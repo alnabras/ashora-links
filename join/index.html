@@ -1,18 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تطبيق عاشوراء</title>
-    <script>
-        // تحويل المستخدم تلقائياً إلى التطبيق عبر الـ Scheme البديل
-        const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get('id');
-        if (id) {
-            window.location.href = "ashora://join?id=" + id;
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+            color: #333;
         }
+        .container {
+            text-align: center;
+            padding: 20px;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            animation: spin 0.8s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .btn-download {
+            display: none;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #27ae60;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+    <script>
+        // تشغيل فوري ومباشر دون انتظار تحميل عناصر الصفحة بالكامل لتقليل التأخير
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            const fallbackUrl = "https://play.google.com/store/apps/details?id=alnabras.net.ashora";
+
+            if (id) {
+                const appUri = "ashora://join?id=" + id;
+                
+                // 1. إطلاق أمر فتح التطبيق فوراً وبدون أي تأخير زمني
+                window.location.href = appUri;
+
+                // 2. إعداد فحص ذكي وسريع لحالة التثبيت
+                const startTime = Date.now();
+                const timeout = setTimeout(function() {
+                    // تقليص الفارق الزمني للفحص للتأكد بسرعة إن كان التطبيق غير مثبت
+                    if (Date.now() - startTime < 1500) {
+                        const statusText = document.getElementById("status-text");
+                        const loader = document.getElementById("loader");
+                        const downloadBtn = document.getElementById("download-btn");
+
+                        if (statusText) statusText.innerText = "جاري تحويلك للمتجر للتحميل...";
+                        if (loader) loader.style.display = "none";
+                        if (downloadBtn) {
+                            downloadBtn.href = fallbackUrl;
+                            downloadBtn.style.display = "inline-block";
+                        }
+                        // تحويل تلقائي سريع للمتجر
+                        window.location.href = fallbackUrl;
+                    }
+                }, 1200); // تقليل وقت الانتظار إلى 1.2 ثانية فقط بدلاً من ثانيتين لسرعة استجابة أعلى
+
+                window.onblur = function() {
+                    clearTimeout(timeout);
+                };
+            }
+        })();
+
+        // إدارة واجهة العرض في حال عدم وجود معرف أو حدوث خطأ بالرابط
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (!urlParams.get('id')) {
+                document.getElementById("status-text").innerText = "رابط الدعوة غير صحيح أو منتهي الصلاحية.";
+                document.getElementById("loader").style.display = "none";
+            }
+        };
     </script>
 </head>
 <body>
-    <p style="text-align: center; margin-top: 50px;">جاري توجيهك إلى التطبيق...</p>
+    <div class="container">
+        <div id="loader" class="loader"></div>
+        <p id="status-text">جاري فتح التطبيق وتوجيهك...</p>
+        <a id="download-btn" class="btn-download" href="#">تحميل تطبيق عاشوراء من Google Play</a>
+    </div>
 </body>
 </html>
