@@ -50,17 +50,17 @@
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
             
-            // استخدام بروتوكول market:// لإجبار النظام على فتح تطبيق قوقل بلاي مباشرة
-            const marketUrl = "market://details?id=alnabras.net.ashora";
+            // كود Intent الإجباري لفتح تطبيق قوقل بلاي الرسمي مباشرة بدون وسيط
+            const androidIntentUrl = "intent://details?id=alnabras.net.ashora#Intent;scheme=market;package=com.android.vending;end";
             const webUrl = "https://play.google.com/store/apps/details?id=alnabras.net.ashora";
 
             if (id) {
                 const appUri = "ashora://join?id=" + id;
                 
-                // 1. محاولة فتح تطبيقك مباشرة
+                // 1. محاولة فتح تطبيقك مباشرة أولاً
                 window.location.href = appUri;
 
-                // 2. فحص سريع: إذا لم يفتح التطبيق، نفتح متجر قوقل بلاي مباشرة
+                // 2. إذا لم يفتح، نقوم بإجبار الهاتف على فتح تطبيق المتجر الرسمي
                 const startTime = Date.now();
                 const timeout = setTimeout(function() {
                     if (Date.now() - startTime < 1500) {
@@ -68,15 +68,15 @@
                         const loader = document.getElementById("loader");
                         const downloadBtn = document.getElementById("download-btn");
 
-                        if (statusText) statusText.innerText = "جاري فتح متجر Google Play...";
+                        if (statusText) statusText.innerText = "جاري فتح متجر Google Play الرسمي...";
                         if (loader) loader.style.display = "none";
                         if (downloadBtn) {
-                            downloadBtn.href = webUrl; // رابط الويب كاحتياط يدوي للزر
+                            downloadBtn.href = webUrl;
                             downloadBtn.style.display = "inline-block";
                         }
                         
-                        // التوجيه الإجباري لتطبيق المتجر
-                        window.location.href = marketUrl;
+                        // التوجيه الذكي المباشر لتطبيق المتجر
+                        window.location.href = androidIntentUrl;
                     }
                 }, 1200);
 
