@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>تطبيق عاشوراء</title>
+    <script>
+        // تحويل المستخدم تلقائياً إلى التطبيق عبر الـ Scheme البديل
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        if (id) {
+            window.location.href = "ashora://join?id=" + id;
+        }
+    </script>
+</head>
+<body>
+    <p style="text-align: center; margin-top: 50px;">جاري توجيهك إلى التطبيق...</p>
+</body>
+</html>
